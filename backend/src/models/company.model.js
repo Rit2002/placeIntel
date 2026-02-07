@@ -1,16 +1,17 @@
 const mongoose = require('mongoose');
-const { INDUSTRY_TYPE } = require('../utils/constant');
+const { INDUSTRY_TYPE } = require('../utils/constants');
 
 const companySchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
+        unique: true,
         required: true
     },
 
     description: {
         type: String,
-         trim: true,
+        trim: true,
         required: true
     },
 
@@ -32,7 +33,7 @@ const companySchema = new mongoose.Schema({
     foundedYear: {
         type: Number,
         min: 1900,
-        max: new Date.getFullYear()
+        max: new Date().getFullYear()
     },
 
     headquarters: {
@@ -40,11 +41,11 @@ const companySchema = new mongoose.Schema({
         trim: true,
     },
 
-    rolesOffered: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role',
-        required: true
-    }],
+    // rolesOffered: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Role',
+    //     required: true
+    // }],
 
     active: {
         type: Boolean,
@@ -55,6 +56,4 @@ const companySchema = new mongoose.Schema({
 
 const Company = mongoose.model('Company', companySchema);
 
-module.exports = {
-    Company
-}
+module.exports = Company;

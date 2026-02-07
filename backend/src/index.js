@@ -1,10 +1,18 @@
+// installed modules
 const express = require('express');
 const dotenv = require('dotenv');
 
+// created modules
 const main = require('../src/config/db.config');
+const companyRoute = require('./routes/v1/company.route');
 
 const app = express();
 dotenv.config();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended : true }));
+
+app.use('/pnp/api/v1', companyRoute);
 
 main()
     .then(() => {
