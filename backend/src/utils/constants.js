@@ -20,8 +20,14 @@ const INDUSTRY_TYPE = {
     startup : 'startup'
 }
 
+const DIFFICULTY_LEVEL = {
+    EASY : 'Easy',
+    MEDIUM : 'Medium',
+    HARD : 'Hard'
+}
 
 module.exports = {
     STATUS,
-    INDUSTRY_TYPE
+    INDUSTRY_TYPE,
+    DIFFICULTY_LEVEL
 }

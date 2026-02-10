@@ -41,12 +41,6 @@ const companySchema = new mongoose.Schema({
         trim: true,
     },
 
-    // rolesOffered: [{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Role',
-    //     required: true
-    // }],
-
     active: {
         type: Boolean,
         default: true
