@@ -1,12 +1,17 @@
 const express = require('express');
-const companyRoute = express.Router();
+const companyRouter = express.Router();
 const companyController = require('../../controllers/company.controller');
 const companyMiddleware = require('../../middlewares/company.middleware');
 
-companyRoute.post(
+companyRouter.post(
     '/company',
     companyMiddleware.validateCompanyCreateRequest,
     companyController.create
 );
 
-module.exports = companyRoute;
+companyRouter.get(
+    '/company/:id',
+    companyController.getCompany
+)
+
+module.exports = companyRouter;

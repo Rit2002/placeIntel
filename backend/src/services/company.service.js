@@ -1,15 +1,16 @@
 const Company = require('../models/company.model');
 const { STATUS } = require('../utils/constants');
+const AppError = require('../utils/errorbody');
 
 const createCompany = async (data) => {
     try {
         const existing = await Company.findOne({ name : data.name });
 
         if(existing) {
-            throw {
-                err : 'Company already exist',
-                code : STATUS.CONFLICT
-            }
+            throw new AppError(
+                'Company already exist',
+                STATUS.CONFLICT
+            )
         }
 
         const company = await Company.create(data);
@@ -25,16 +26,36 @@ const createCompany = async (data) => {
                 err[key] = error.errors[key].message;
             });
 
-            throw {
-                err : err,
-                code : STATUS.UNPROCESSABLE_ENTITY
-            }
+            throw new AppError(
+                err,
+                STATUS.UNPROCESSABLE_ENTITY
+            )
         }
 
         throw error;
     }
 }
 
+const getCompanyById = async (companyId) => {
+    try {
+        const response = await Company.findById(companyId);
+
+        if(!response) {
+            throw new AppError(
+                'No company found for given id',
+                STATUS.NOT_FOUND
+            )
+        }
+
+        return response;
+
+    } catch (error) {
+
+        throw error;       
+    }
+}
+
 module.exports = {
-    createCompany
+    createCompany,
+    getCompanyById
 }

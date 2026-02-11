@@ -12,7 +12,7 @@ dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
 
-app.use('/pnp/api/v1', companyRoute);
+app.use('/pi/api/v1', companyRoute);
 
 main()
     .then(() => {

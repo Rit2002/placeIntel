@@ -1,29 +1,62 @@
 const companyService = require('../services/company.service');
 const { STATUS } = require('../utils/constants');
 const { errorResponseBody, successResponseBody } = require('../utils/responsebody');
+const AppError = require('../utils/errorbody');
 
 const create = async (req, res) => {
     try {
         const response = await companyService.createCompany(req.body);
 
-        successResponseBody.data = response;
-        successResponseBody.message = 'Successfully created a company';
-
-        return res.status(STATUS.CREATED).json(successResponseBody);
+        return res.status(STATUS.CREATED).json(
+            successResponseBody(
+                response, 
+                'Successfully created a company'
+            )
+        );
         
     } catch (error) {
+        console.log(error);
         
-        if(error.err) {
-            errorResponseBody.err = error.err;
-            return res.status(error.code).json(errorResponseBody);
+        if(error instanceof AppError) {
+           
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
         }
 
-        errorResponseBody.err = error;
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
 
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
+const getCompany = async (req, res) => {
+    try {
+        const response = await companyService.getCompanyById(req.params.id);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(
+                response,
+                'Successfully fetched the company'
+            )
+        );
+
+    } catch (error) {
+
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+        
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
     }
 }
 
 module.exports = {
-    create
+    create,
+    getCompany
 }

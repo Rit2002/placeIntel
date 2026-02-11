@@ -1,22 +1,22 @@
 /**
- * This object will be used as a template for building success response
+ * This function will be used as a template for building success response
  */
-successResponseBody = {
+successResponseBody = (data, message = "Successfully processed the request") => ({
   success : true,
-  err : {},
-  data : {},
-  message :  "Successfully processed the request"
-}
+  err : null,
+  data : data,
+  message : message
+});
 
 /**
- * This object will be used as a template for building error response
+ * This function will be used as a template for building error response
  */
-errorResponseBody = {
+errorResponseBody = (err, message="Something went wrong") => ({
   success : false,
-  err : {},
-  data : {},
-  message :  "Something went wrong"
-}
+  err : err,
+  data : null,
+  message :  message
+})
 
 module.exports = {
   successResponseBody,
