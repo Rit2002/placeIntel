@@ -10,8 +10,14 @@ companyRouter.post(
 );
 
 companyRouter.get(
+    '/company/all',
+    companyController.getAllCompanies
+);
+
+companyRouter.get(
     '/company/:id',
     companyController.getCompany
-)
+);
+
 
 module.exports = companyRouter;

@@ -56,7 +56,26 @@ const getCompany = async (req, res) => {
     }
 }
 
+const getAllCompanies = async (req, res) => {
+    try {
+        const response = await companyService.getAllCompanies(req.query);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Successfully fetched the companies')
+        );
+
+    } catch (error) {
+
+        console.log(error);
+        
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
 module.exports = {
     create,
-    getCompany
+    getCompany,
+    getAllCompanies
 }

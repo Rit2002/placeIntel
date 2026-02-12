@@ -4,7 +4,7 @@ const AppError = require('../utils/errorbody');
 
 const createCompany = async (data) => {
     try {
-        const existing = await Company.findOne({ name : data.name });
+        const existing = await Company.create(data);
 
         if(existing) {
             throw new AppError(
@@ -55,7 +55,53 @@ const getCompanyById = async (companyId) => {
     }
 }
 
+const getAllCompanies = async (data) => {
+    try {
+        let { page = 1, limit = 10, name, industryType } = data; 
+
+        let filter = {};
+
+        // this is a page no.
+        page = Math.max(1, parseInt(page));
+
+        // Limits the no of companies per page in between 1 to 50
+        limit = Math.min(50, Math.max(1, parseInt(limit)));
+        
+        // no of documents to skip 
+        const skip = (page - 1) * limit;
+
+        // search for the name even if it is partially provided
+        // applies case-insensitive regex for partial name
+        if(name) {
+            filter.name = {$regex: name, $options: "i"};
+        }
+
+        if(industryType) {
+            filter.industryType = industryType;
+        }
+
+        const companies = await Company.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt : -1 }); // sorts the documents in descending order based on createdAt field
+
+        const total = await Company.countDocuments(filter);
+
+        return {
+            totalCompanies : total,
+            totalPages: Math.ceil(total / limit),
+            companies : companies,
+        };
+        
+    } catch (error) {
+        console.log(error);
+        
+        throw error;
+    }
+}
+
 module.exports = {
     createCompany,
-    getCompanyById
+    getCompanyById,
+    getAllCompanies
 }
