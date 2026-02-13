@@ -4,12 +4,12 @@ const AppError = require('../utils/errorbody');
 
 const createCompany = async (data) => {
     try {
-        const existing = await Company.create(data);
+        const existing = await Company.findOne(data);
 
         if(existing) {
             throw new AppError(
-                'Company already exist',
-                STATUS.CONFLICT
+                STATUS.CONFLICT,
+                'Company already exist'
             )
         }
 
@@ -27,8 +27,8 @@ const createCompany = async (data) => {
             });
 
             throw new AppError(
-                err,
-                STATUS.UNPROCESSABLE_ENTITY
+                STATUS.UNPROCESSABLE_ENTITY,
+                err
             )
         }
 
@@ -42,8 +42,8 @@ const getCompanyById = async (companyId) => {
 
         if(!response) {
             throw new AppError(
-                'No company found for given id',
-                STATUS.NOT_FOUND
+                STATUS.NOT_FOUND,
+                'No company found for given id'
             )
         }
 
@@ -100,8 +100,54 @@ const getAllCompanies = async (data) => {
     }
 }
 
+const deleteCompanyById = async (companyId) => {
+    try {
+        const response = await Company.findByIdAndDelete(companyId);
+
+        if(!response) {
+            throw new AppError(
+                STATUS.NOT_FOUND,
+                'No company found for given id'
+            );
+        }
+
+        return response;
+
+    } catch (error) {
+        console.log(error);
+        
+        throw error;
+    }
+}
+
+const updateCompanyDetails = async (companyId, data) => {
+    try {
+        const response = await Company.findByIdAndUpdate(companyId, data, {new : true, runValidators : true});
+
+        return response;
+
+    } catch (error) {
+        
+        if(error.name == 'ValidationError') {
+            let err = {};
+            Object.keys(error.errors).forEach( key => {
+                err[key] = error.errors[key].message;
+            });
+
+            throw new AppError(
+                STATUS.UNPROCESSABLE_ENTITY,
+                err
+            );
+        }
+
+        throw error;
+    }
+}
+
 module.exports = {
     createCompany,
     getCompanyById,
-    getAllCompanies
+    getAllCompanies,
+    deleteCompanyById,
+    updateCompanyDetails
 }

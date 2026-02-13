@@ -3,9 +3,9 @@
  */
 successResponseBody = (data, message = "Successfully processed the request") => ({
   success : true,
-  err : null,
+  message : message,
   data : data,
-  message : message
+  err : null
 });
 
 /**
@@ -13,9 +13,9 @@ successResponseBody = (data, message = "Successfully processed the request") => 
  */
 errorResponseBody = (err, message="Something went wrong") => ({
   success : false,
+  message :  message,
   err : err,
   data : null,
-  message :  message
 })
 
 module.exports = {

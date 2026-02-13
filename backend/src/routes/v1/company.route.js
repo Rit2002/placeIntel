@@ -19,5 +19,20 @@ companyRouter.get(
     companyController.getCompany
 );
 
+companyRouter.delete(
+    '/company/:id',
+    companyController.deleteCompany
+);
+
+companyRouter.put(
+    '/company/:id',
+    companyController.updateCompany
+);
+
+companyRouter.patch(
+    '/company/:id',
+    companyController.updateCompany
+);
+
 
 module.exports = companyRouter;
