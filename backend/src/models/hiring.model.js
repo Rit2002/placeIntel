@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { DIFFICULTY_LEVEL, ROUND_TYPE } = require('../utils/constants');
 
 const hiringSchema = new mongoose.Schema({
     companyId: {
@@ -27,11 +28,48 @@ const hiringSchema = new mongoose.Schema({
         }
     }],
 
-    rounds: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Rounds',
-        required: true,
-    },
+    rounds: [{
+        name: {
+            type: String,
+            required: true
+        },
+
+        type: {
+            type: String,
+            enum: {
+                values: Object.values(ROUND_TYPE),
+                message: 'Invalid Round type'
+            }
+        },
+
+        description: {
+            type: String,
+            trim: true
+        },
+
+        order: {
+            type: Number,
+            required: true
+        },
+
+        durationMinutes: {
+            type: Number,
+            required: true
+        },
+
+        difficulty: {
+            type: String,
+            enum: {
+                values: Object.values(DIFFICULTY_LEVEL),
+                message: 'Invalid difficulty level'
+            }
+        },
+
+        topics: {
+            type: [String],
+        },
+        
+    }],
 
     noOfRounds: {
         type: Number

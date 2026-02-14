@@ -24,11 +24,6 @@ companyRouter.delete(
     companyController.deleteCompany
 );
 
-companyRouter.put(
-    '/company/:id',
-    companyController.updateCompany
-);
-
 companyRouter.patch(
     '/company/:id',
     companyController.updateCompany

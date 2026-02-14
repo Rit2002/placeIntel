@@ -26,8 +26,17 @@ const DIFFICULTY_LEVEL = {
     HARD : 'Hard'
 }
 
+const ROUND_TYPE = {
+    OA : "OA", 
+    Technical : "Technical", 
+    HR : "HR", 
+    Managerial : "Managerial", 
+    Assignment : "Assignment"
+}
+
 module.exports = {
     STATUS,
     INDUSTRY_TYPE,
-    DIFFICULTY_LEVEL
+    DIFFICULTY_LEVEL,
+    ROUND_TYPE
 }

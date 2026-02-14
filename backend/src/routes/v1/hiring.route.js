@@ -7,6 +7,12 @@ hiringRouter.post(
     '/hiring',
     hiringMiddleware.validateHiringCreateRequest,
     hiringController.create
-)
+);
+
+hiringRouter.get(
+    '/hiring/:id',
+    hiringMiddleware.validateGetHiringRequest,
+    hiringController.getHiring
+);
 
 module.exports = hiringRouter;

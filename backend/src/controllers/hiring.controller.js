@@ -26,7 +26,28 @@ const create = async (req, res) => {
     }
 }
 
+const getHiring = async (req, res) => {
+    try {
+        const response = await hiringService.getHiringById(req.params.id);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Successfully fetched the hiring details')
+        );
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
 
 module.exports = {
-    create
+    create,
+    getHiring
 }

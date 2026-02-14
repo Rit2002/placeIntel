@@ -28,6 +28,27 @@ const createHiring= async (data) => {
     }
 }
 
+const getHiringById = async (hiringId) => {
+    try {
+        const response = await Hiring.findById(hiringId);
+
+        if(!response) {
+            throw new AppError(
+                STATUS.NOT_FOUND,
+                'No hiring found for given id'
+            );
+        }
+
+        return response;
+
+    } catch (error) {
+        console.log(error);
+
+        throw error;        
+    }
+}
+
 module.exports = {
-    createHiring
+    createHiring,
+    getHiringById
 }

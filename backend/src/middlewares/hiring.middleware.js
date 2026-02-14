@@ -63,6 +63,25 @@ const validateHiringCreateRequest = (req, res, next) => {
     next();
 }
 
+const validateGetHiringRequest = (req, res, next) => {
+
+    if(!req.params.id) {
+        return res.status(STATUS.BAD_REQUEST).json(
+            errorResponseBody('No hiring id found')
+        );
+    }
+
+    if(!objectId.isValid(req.params.id)) {
+        return res.status(STATUS.BAD_REQUEST).json(
+            errorResponseBody('Invalid hiring id')
+        );
+    }
+
+    // everything right
+    next();
+}
+
 module.exports = {
-    validateHiringCreateRequest
+    validateHiringCreateRequest,
+    validateGetHiringRequest
 }
