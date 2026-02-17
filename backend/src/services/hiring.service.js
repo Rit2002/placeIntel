@@ -48,7 +48,53 @@ const getHiringById = async (hiringId) => {
     }
 }
 
+const getAllHiring = async (data, page=1, limit=10) => {
+    try {
+
+        let filter = {};
+
+        page = parseInt(page);
+        limit = parseInt(limit);
+
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(limit) || limit < 1) limit = 10;
+
+        limit = Math.min(limit, 50);
+        
+        // no of documents to skip 
+        const skip = (page - 1) * limit;
+
+        if(data && data.companyId) {
+            filter.companyId = data.companyId;
+        }
+
+        if(data && data.year) {
+            filter.year = data.year;
+        }
+
+        const hirings = await Hiring.find(filter)
+        .populate('companyId', 'name')
+        .sort({ createdAt : -1 }) // sorts the documents in descending order based on createdAt field
+        .skip(skip)
+        .limit(limit)
+
+        const total = await Hiring.countDocuments(filter);
+
+        return {
+            totalHirings : total,
+            totalPages: Math.ceil(total / limit),
+            hirings : hirings,
+        };
+
+    } catch (error) {
+        console.log(error);
+
+        throw error;        
+    }
+}
+
 module.exports = {
     createHiring,
-    getHiringById
+    getHiringById,
+    getAllHiring
 }

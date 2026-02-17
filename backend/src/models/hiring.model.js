@@ -68,13 +68,14 @@ const hiringSchema = new mongoose.Schema({
         topics: {
             type: [String],
         },
-        
     }],
 
-    noOfRounds: {
-        type: Number
-    }
-
+    year: {
+        type: Number,
+        // required: true,
+        index: true
+    },
+    
 }, { timestamps : true });
 
 const Hiring = mongoose.model('Hiring', hiringSchema);

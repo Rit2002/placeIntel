@@ -61,11 +61,13 @@ const getAllCompanies = async (data) => {
 
         let filter = {};
 
-        // this is a page no.
-        page = Math.max(1, parseInt(page));
+        page = parseInt(page);
+        limit = parseInt(limit);
 
-        // Limits the no of companies per page in between 1 to 50
-        limit = Math.min(50, Math.max(1, parseInt(limit)));
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(limit) || limit < 1) limit = 10;
+
+        limit = Math.min(limit, 50);
         
         // no of documents to skip 
         const skip = (page - 1) * limit;

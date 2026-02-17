@@ -81,7 +81,25 @@ const validateGetHiringRequest = (req, res, next) => {
     next();
 }
 
+const validateGetAllHiringRequest = (req, res, next) => {
+
+    if(req.body && req.body.year && !isNumber(req.body.year)) {
+        return res.status(STATUS.BAD_REQUEST).json(
+            errorResponseBody('year type invalid')
+        );
+    }
+
+    if(req.body && req.body.companyId && !objectId.isValid(req.body.companyId)) {
+        return res.status(STATUS.BAD_REQUEST).json(
+            errorResponseBody('Invalid companyID')
+        );
+    }
+
+    next();
+}
+
 module.exports = {
     validateHiringCreateRequest,
-    validateGetHiringRequest
+    validateGetHiringRequest,
+    validateGetAllHiringRequest
 }

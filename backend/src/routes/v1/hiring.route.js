@@ -10,9 +10,16 @@ hiringRouter.post(
 );
 
 hiringRouter.get(
+    '/hiring/all',
+    hiringMiddleware.validateGetAllHiringRequest,
+    hiringController.getAllHiring
+);
+
+hiringRouter.get(
     '/hiring/:id',
     hiringMiddleware.validateGetHiringRequest,
     hiringController.getHiring
 );
+
 
 module.exports = hiringRouter;

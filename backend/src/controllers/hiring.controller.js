@@ -47,7 +47,25 @@ const getHiring = async (req, res) => {
     }
 }
 
+const getAllHiring = async (req, res) => {
+    try {
+        const response = await hiringService.getAllHiring(req.body, req.params.page, req.params.limit);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Fetched all documents successfully')
+        );
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
 module.exports = {
     create,
-    getHiring
+    getHiring,
+    getAllHiring
 }
