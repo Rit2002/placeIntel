@@ -64,8 +64,56 @@ const getAllHiring = async (req, res) => {
     }
 }
 
+const updateHiring = async (req, res) => {
+    try {
+        const response = await hiringService.updateHiring(req.params.id, req.body);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Successfully updated the hiring')
+        );
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const deleteHiring = async (req, res) => {
+    try {
+        const response = await hiringService.deleteHiring(req.params.id);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Successfully deleted the hiring')
+        );
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
 module.exports = {
     create,
     getHiring,
-    getAllHiring
+    getAllHiring,
+    updateHiring,
+    deleteHiring
 }

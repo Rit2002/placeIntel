@@ -93,8 +93,65 @@ const getAllHiring = async (data, page=1, limit=10) => {
     }
 }
 
+const updateHiring = async (hiringId, data) => {
+    try {
+        const updatedHiring = await Hiring.findByIdAndUpdate(hiringId, { $set : data}, { new : true, runValidators : true });
+
+        if(!updatedHiring) {
+
+            throw new AppError(
+                STATUS.NOT_FOUND,
+                'No hiring found for given id'
+            );
+        }
+
+        return updatedHiring;
+
+    } catch (error) {
+        console.log(error);
+
+        if(error.name == 'ValidationError') {
+            let err = {};
+
+            Object.keys(error.errors).forEach( key => {
+                err[key] = error.errors[key].message;
+            });
+
+            throw new AppError(
+                STATUS.UNPROCESSABLE_ENTITY,
+                err
+            );
+        }
+        
+        throw error;        
+    }
+}
+
+const deleteHiring = async (hiringId) => {
+    try {
+        const deletedHiring  = await Hiring.findByIdAndDelete(hiringId);
+
+        if(!deletedHiring) {
+            
+            throw new AppError(
+                STATUS.NOT_FOUND,
+                'No hiring found for given id'
+            );
+        }
+
+        return deletedHiring;
+
+    } catch (error) {
+        console.log(error);
+
+        throw error;        
+    }
+}
+
 module.exports = {
     createHiring,
     getHiringById,
-    getAllHiring
+    getAllHiring,
+    updateHiring,
+    deleteHiring
 }

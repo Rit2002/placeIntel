@@ -21,5 +21,17 @@ hiringRouter.get(
     hiringController.getHiring
 );
 
+hiringRouter.patch(
+    '/hiring/:id',
+    hiringMiddleware.validateObjectId,
+    hiringController.updateHiring
+);
+
+hiringRouter.delete(
+    '/hiring/:id',
+    hiringMiddleware.validateObjectId,
+    hiringController.deleteHiring
+);
+
 
 module.exports = hiringRouter;
