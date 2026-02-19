@@ -16,16 +16,19 @@ companyRouter.get(
 
 companyRouter.get(
     '/company/:id',
+    companyMiddleware.validateObjectId,
     companyController.getCompany
 );
 
 companyRouter.delete(
     '/company/:id',
+    companyMiddleware.validateObjectId,
     companyController.deleteCompany
 );
 
 companyRouter.patch(
     '/company/:id',
+    companyMiddleware.validateObjectId,
     companyController.updateCompany
 );
 

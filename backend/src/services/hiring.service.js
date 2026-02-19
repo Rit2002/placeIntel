@@ -4,6 +4,15 @@ const AppError = require('../utils/errorbody');
 
 const createHiring= async (data) => {
     try {
+        const existing = await Hiring.findOne(data);
+        
+        if(existing) {
+            throw new AppError(
+                STATUS.CONFLICT,
+                'Hiring already exist'
+            );
+        }
+
         const response = await Hiring.create(data);
         
         return response;

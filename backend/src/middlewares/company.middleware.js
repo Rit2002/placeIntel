@@ -1,5 +1,6 @@
 const { STATUS } = require('../utils/constants');
 const { errorResponseBody } = require('../utils/responsebody');
+const objectId = require('mongoose').Types.ObjectId;
 
 const validateCompanyCreateRequest = (req, res, next) => {
 
@@ -28,6 +29,16 @@ const validateCompanyCreateRequest = (req, res, next) => {
 }
 
 
+const validateObjectId = (req, res, next) => {
+
+    if(!objectId.isValid(req.params.id)) {
+        return res.status(STATUS.BAD_REQUEST).json(
+            errorResponseBody('Invalid id')
+        );
+    }
+}
+
 module.exports = {
     validateCompanyCreateRequest,
+    validateObjectId
 }
