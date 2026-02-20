@@ -26,6 +26,23 @@ const create = async (req, res) => {
     }
 }
 
+const getAllEligibility = async (req, res) => {
+    try {
+        const response = await eligibilityService.getAllEligibility(req.query);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Fetched all the eligibilities')
+        );
+
+    } catch (error) {
+        
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
 module.exports = {
-    create
+    create,
+    getAllEligibility
 }

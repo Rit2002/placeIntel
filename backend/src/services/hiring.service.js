@@ -57,16 +57,16 @@ const getHiringById = async (hiringId) => {
     }
 }
 
-const getAllHiring = async (data, page=1, limit=10) => {
+const getAllHiring = async (data) => {
     try {
 
         let filter = {};
 
-        page = parseInt(page);
-        limit = parseInt(limit);
+        page = parseInt(data.page);
+        limit = parseInt(data.limit);
 
-        if (isNaN(page) || page < 1) page = 1;
-        if (isNaN(limit) || limit < 1) limit = 10;
+        if (isNaN(page) || data.page < 1) page = 1;
+        if (isNaN(limit) || data.limit < 10) limit = 10;
 
         limit = Math.min(limit, 50);
         

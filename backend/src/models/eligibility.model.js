@@ -76,6 +76,10 @@ const eligibilitySchema = new mongoose.Schema({
     
 }, { timestamps : true });
 
+eligibilitySchema.index({ hiringId: 1 });
+eligibilitySchema.index({ "academics.minCgpa": 1 });
+eligibilitySchema.index({ "education.allowedBranches": 1 });
+
 const Eligibility = mongoose.model('Eligibility', eligibilitySchema);
 
 module.exports = Eligibility;

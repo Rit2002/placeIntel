@@ -7,6 +7,11 @@ eligibilityRouter.post(
     '/eligibility',
     eligibilityMiddleware.validateEligibilityRequest,
     eligibilityController.create
+);
+
+eligibilityRouter.get(
+    '/eligibility/all',
+    eligibilityController.getAllEligibility
 )
 
 module.exports = eligibilityRouter;

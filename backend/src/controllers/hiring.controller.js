@@ -49,7 +49,7 @@ const getHiring = async (req, res) => {
 
 const getAllHiring = async (req, res) => {
     try {
-        const response = await hiringService.getAllHiring(req.body, req.params.page, req.params.limit);
+        const response = await hiringService.getAllHiring(req.query);
 
         return res.status(STATUS.OK).json(
             successResponseBody(response, 'Fetched all documents successfully')
