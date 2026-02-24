@@ -11,7 +11,18 @@ eligibilityRouter.post(
 
 eligibilityRouter.get(
     '/eligibility/all',
+    eligibilityMiddleware.validateGetEligibilityRequest,
     eligibilityController.getAllEligibility
-)
+);
+
+eligibilityRouter.get(
+    '/eligibility/:id',
+    eligibilityController.getEligibility
+);
+
+eligibilityRouter.patch(
+    '/eligibility/:id',
+    eligibilityController.updateEligibility
+);
 
 module.exports = eligibilityRouter;

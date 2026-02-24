@@ -54,6 +54,10 @@ const getAllEligibility = async (query) => {
         // no of documents to skip 
         const skip = (page - 1) * limit;
 
+        if (query.hiringId) {
+            filter.hiringId = query.hiringId;
+        }
+
         if (!isNaN(query.minCgpa)) {
             filter["academics.minCgpa"] = Number(query.minCgpa) ;
         }
@@ -102,8 +106,62 @@ const getAllEligibility = async (query) => {
     }
 }
 
+const updateEligibility = async (eligibilityId, data) => {
+    try {
+        const response = await Eligibility.findByIdAndUpdate(eligibilityId,{$ne: data}, {new:true, runValidators:true});
+
+        if(!response) {
+            throw new AppError(
+                STATUS.NOT_FOUND,
+                'NO Eligibility info found for given id'
+            );
+        }
+
+        return response;
+
+    } catch (error) {
+        console.log(error);
+        
+        if(error.name == 'ValidationError') {
+            let err = {};
+
+            Object.keys(error.errors).forEach( key => {
+                err[key] = error.errors[key].message;
+            });
+
+            throw new AppError(
+                STATUS.UNPROCESSABLE_ENTITY,
+                err
+            );
+        }
+        
+        throw error;
+    }
+}
+
+const getEligibilityById = async (eligibilityId) => {
+    try {
+        const response = await Eligibility.findById(eligibilityId);
+
+        if(!response) {
+            throw new AppError(
+                STATUS.NOT_FOUND,
+                'Eligibility NOT found for given id'
+            );
+        }
+
+        return response;
+
+    } catch (error) {
+        console.log(error);
+
+        throw error;        
+    }
+}
 
 module.exports = {
     createEligibility,
-    getAllEligibility
+    getAllEligibility,
+    updateEligibility,
+    getEligibilityById
 }

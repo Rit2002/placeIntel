@@ -42,7 +42,55 @@ const getAllEligibility = async (req, res) => {
     }
 }
 
+const updateEligibility = async (req, res) => {
+    try {
+        const response = await eligibilityService.updateEligibility(req.params.id, req.body);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Successfully updated!')
+        )
+    } catch (error) {
+        console.log(error);
+        
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        )
+    }
+}
+
+const getEligibility = async (req, res) => {
+    try {
+        const response = await eligibilityService.getEligibilityById(req.params.id);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response, 'Successfully fetched the eligibility')
+        );
+
+    } catch (error) {
+
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+        
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
 module.exports = {
     create,
-    getAllEligibility
+    getAllEligibility,
+    updateEligibility,
+    getEligibility
 }

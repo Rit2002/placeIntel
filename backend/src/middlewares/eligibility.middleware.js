@@ -112,6 +112,18 @@ const validateEligibilityRequest = (req, res, next) => {
     next();
 }
 
+const validateGetEligibilityRequest = (req, res, next) => {
+
+    if(!objectId.isValid(req.query.hiringId)) {
+        return res.status(STATUS.BAD_REQUEST).json(
+            errorResponseBody('Invalid hiring id')
+        );
+    }
+
+    next();
+}
+
 module.exports = {
-    validateEligibilityRequest
+    validateEligibilityRequest,
+    validateGetEligibilityRequest
 }
