@@ -21,6 +21,7 @@ const eligibilitySchema = new mongoose.Schema({
             type: Number,
             min: 0,
             default: 0,
+            required: true,
         },
 
         tenthPercent: {
@@ -40,7 +41,8 @@ const eligibilitySchema = new mongoose.Schema({
         degreePercent: {
             type: Number,
             min: 0,
-            max: 100
+            max: 100,
+            required: true
         }
     },
 
@@ -48,6 +50,7 @@ const eligibilitySchema = new mongoose.Schema({
 
         allowedDegrees: [{
             type: String,
+            required: true,
             trim: true
         }],
 
@@ -70,7 +73,12 @@ const eligibilitySchema = new mongoose.Schema({
         },
 
     }
+    
 }, { timestamps : true });
+
+eligibilitySchema.index({ hiringId: 1 });
+eligibilitySchema.index({ "academics.minCgpa": 1 });
+eligibilitySchema.index({ "education.allowedBranches": 1 });
 
 const Eligibility = mongoose.model('Eligibility', eligibilitySchema);
 

@@ -1,4 +1,4 @@
-const hiringService = require('../services/hiring.service');
+const eligibilityService = require('../services/eligibility.service');
 const { STATUS } = require('../utils/constants');
 const AppError = require('../utils/errorbody');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody');
@@ -6,10 +6,10 @@ const { successResponseBody, errorResponseBody } = require('../utils/responsebod
 
 const create = async (req, res) => {
     try {
-        const response = await hiringService.createHiring(req.body);
+        const response = await eligibilityService.createEligibility(req.body);
 
         return res.status(STATUS.CREATED).json(
-            successResponseBody(response, 'Successfully registered a hiring process')
+            successResponseBody(response, 'Successfully created the eligibility')
         );
 
     } catch (error) {
@@ -26,53 +26,31 @@ const create = async (req, res) => {
     }
 }
 
-const getHiring = async (req, res) => {
+const getAllEligibility = async (req, res) => {
     try {
-        const response = await hiringService.getHiringById(req.params.id);
+        const response = await eligibilityService.getAllEligibility(req.query);
 
         return res.status(STATUS.OK).json(
-            successResponseBody(response, 'Successfully fetched the hiring details')
+            successResponseBody(response, 'Fetched all the eligibilities')
         );
+
     } catch (error) {
         
-        if(error instanceof AppError) {
-            return res.status(error.statusCode).json(
-                errorResponseBody(error.details)
-            );
-        }
-
         return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
             errorResponseBody(error)
         );
     }
 }
 
-const getAllHiring = async (req, res) => {
+const updateEligibility = async (req, res) => {
     try {
-        const response = await hiringService.getAllHiring(req.query);
+        const response = await eligibilityService.updateEligibility(req.params.id, req.body);
 
         return res.status(STATUS.OK).json(
-            successResponseBody(response, 'Fetched all documents successfully')
-        );
-
+            successResponseBody(response, 'Successfully updated!')
+        )
     } catch (error) {
         console.log(error);
-
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
-            errorResponseBody(error)
-        );
-    }
-}
-
-const updateHiring = async (req, res) => {
-    try {
-        const response = await hiringService.updateHiring(req.params.id, req.body);
-
-        return res.status(STATUS.OK).json(
-            successResponseBody(response, 'Successfully updated the hiring')
-        );
-
-    } catch (error) {
         
         if(error instanceof AppError) {
 
@@ -83,27 +61,27 @@ const updateHiring = async (req, res) => {
 
         return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
             errorResponseBody(error)
-        );
+        )
     }
 }
 
-const deleteHiring = async (req, res) => {
+const getEligibility = async (req, res) => {
     try {
-        const response = await hiringService.deleteHiring(req.params.id);
+        const response = await eligibilityService.getEligibilityById(req.params.id);
 
         return res.status(STATUS.OK).json(
-            successResponseBody(response, 'Successfully deleted the hiring')
+            successResponseBody(response, 'Successfully fetched the eligibility')
         );
 
     } catch (error) {
-        
+
         if(error instanceof AppError) {
 
             return res.status(error.statusCode).json(
                 errorResponseBody(error.details)
             );
         }
-
+        
         return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
             errorResponseBody(error)
         );
@@ -112,8 +90,7 @@ const deleteHiring = async (req, res) => {
 
 module.exports = {
     create,
-    getHiring,
-    getAllHiring,
-    updateHiring,
-    deleteHiring
+    getAllEligibility,
+    updateEligibility,
+    getEligibility
 }
