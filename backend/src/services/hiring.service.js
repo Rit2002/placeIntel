@@ -2,7 +2,7 @@ const Hiring = require('../models/hiring.model');
 const { STATUS } = require('../utils/constants');
 const AppError = require('../utils/errorbody');
 
-const createHiring= async (data) => {
+const createHiring = async (data) => {
     try {
         const existing = await Hiring.findOne(data);
         
@@ -62,8 +62,8 @@ const getAllHiring = async (data) => {
 
         let filter = {};
 
-        page = parseInt(data.page);
-        limit = parseInt(data.limit);
+        const page = parseInt(data.page);
+        const limit = parseInt(data.limit);
 
         if (isNaN(page) || data.page < 1) page = 1;
         if (isNaN(limit) || data.limit < 10) limit = 10;

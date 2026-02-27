@@ -1,5 +1,17 @@
 const { z } = require('zod');
 
+const baseEmail = z.
+    email({ 
+        required_error : 'Email is required',
+        message : 'Please enter valid email'
+    })
+    .toLowerCase()
+    .trim()
+
+const basePassword = z
+    .string({ message : 'Password required' })
+    .min(8, 'Password must be at least 8 characters')
+
 const createUserSchema = z.object({
     firstName: z
         .string({ required_error: 'first name is required'})
@@ -14,15 +26,9 @@ const createUserSchema = z.object({
         .trim()
         .optional(),
 
-    email: z
-        .string({ required_error: 'Email is required' })
-        .email('Please enter a valid email')
-        .toLowerCase()
-        .trim(),
+    email: baseEmail,
 
-    password: z
-        .string({ required_error: 'Password required' })
-        .min(8, 'Password must be at least 8 characters'),
+    password: basePassword
 
 });
 
@@ -31,7 +37,14 @@ const updateUserSchema = createUserSchema
     .omit({ email: true })
     .partial();
 
+const signInSchema = z.object({
+    email : baseEmail,
+    password : basePassword            
+});
+
+
 module.exports = {
     createUserSchema,
-    updateUserSchema
+    updateUserSchema,
+    signInSchema
 }
