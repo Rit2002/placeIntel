@@ -20,4 +20,6 @@ const validateRequest = (schema, source = 'body') => {
     };
 }
 
-module.exports = validateRequest;
+module.exports = {
+    validateRequest
+};

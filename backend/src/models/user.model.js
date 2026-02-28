@@ -37,10 +37,10 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: {
-            values: ['TPO', 'User'],
+            values: ['TPO', 'Student', 'Admin'],
             message: 'Invalid Role'
         },
-        default: 'User'
+        default: 'Student'
     }
 
 }, { timestamps: true });

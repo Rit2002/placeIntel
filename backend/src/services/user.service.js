@@ -1,8 +1,10 @@
 const User = require('../models/user.model');
+const Student = require('../models/student.model');
+const TPO = require('../models/tpo.model');
 const { STATUS } = require('../utils/constants');
 const AppError = require('../utils/errorbody');
 
-const registerUser = async (data) => {
+const registerStudent = async (data) => {
     try {
         const exists = await User.findOne({ email : data.email });
 
@@ -10,13 +12,71 @@ const registerUser = async (data) => {
 
             throw new AppError(
                 STATUS.CONFLICT,
-                'The user already exists!'
+                'The student already exists!'
+            );
+        }
+
+        const user = await User.create({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            password: data.password,
+            role: data.role
+        });
+
+        const student = await Student.create({
+            userId: user.id,
+            branch: data.branch,
+            year: data.year
+        });
+
+        return student;
+
+    } catch (error) {
+        
+        if(error.name == 'ValidationError') {
+            let err = {};
+
+            Object.keys(error.errors).forEach( key => {
+                err[key] = error.errors[key].message;
+            });
+
+            throw new AppError(
+                STATUS.UNPROCESSABLE_ENTITY,
+                err
+            );
+        }
+
+        throw error;
+    }
+}
+
+const registerTPO = async (data) => {
+    try {
+        const exists = await User.findOne({ email : data.email });
+
+        if(exists) {
+
+            throw new AppError(
+                STATUS.CONFLICT,
+                'The TPO already exists!'
             )
         }
 
-        const response = await User.create(data);
+        const user = await User.create({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            password: data.password,
+            role: data.role
+        });
 
-        return response;
+        const tpo = await TPO.create({
+            userId: user.id,
+            department: data.department
+        });
+
+        return tpo;
 
     } catch (error) {
         
@@ -58,6 +118,7 @@ const getUserByEmail = async (email) => {
 }
 
 module.exports = {
-    registerUser,
+    registerStudent,
+    registerTPO,
     getUserByEmail
 }

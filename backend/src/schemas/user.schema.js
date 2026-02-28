@@ -32,6 +32,26 @@ const createUserSchema = z.object({
 
 });
 
+const studentRegisterSchema = createUserSchema.extend({
+    branch: z
+        .string({ required_error : 'branch is required' })
+        .min(2, 'Branch must be at least 2 characters')
+        .max(15, 'Branch must be at max 10 characters')
+        .trim(),
+
+    year: z.enum(['1', '2', '3', '4'], {
+        required_error : 'Year is required'
+    })
+});
+
+const tpoRegisterSchema = createUserSchema.extend({
+    department: z
+        .string({ required_error : 'department is required' })
+        .min(2, 'Branch must be at least 2 characters')
+        .max(15, 'Branch must be at max 10 characters')
+        .trim()
+})
+
 // this simply means copy the validation of createUserSchema to update schema but except email(do not need to update) & .partial() means validate only if they are provided by user
 const updateUserSchema = createUserSchema
     .omit({ email: true })
@@ -44,7 +64,8 @@ const signInSchema = z.object({
 
 
 module.exports = {
-    createUserSchema,
+    studentRegisterSchema,
+    tpoRegisterSchema,
     updateUserSchema,
     signInSchema
 }
