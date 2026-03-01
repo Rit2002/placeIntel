@@ -1,9 +1,11 @@
 // installed modules
 const express = require('express');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 
 // created modules
-const main = require('../src/config/db.config');
+const main = require('./config/db.config');
+const { connectRedis } = require('./config/redis.config');
 const companyRoute = require('./routes/v1/company.route');
 const hiringRoute = require('./routes/v1/hiring.route');
 const eligibilityRoute = require('./routes/v1/eligibility.route');
@@ -14,17 +16,29 @@ dotenv.config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
+app.use(cookieParser());
 
 app.use('/pi/api/v1', authRoute);
 app.use('/pi/api/v1', companyRoute);
 app.use('/pi/api/v1', hiringRoute);
 app.use('/pi/api/v1', eligibilityRoute);
 
-main()
-    .then(() => {
+
+const initializeConnection = async () => {
+    try {
+        await Promise.all([
+            main(),
+            connectRedis()
+        ]);
+
         app.listen(process.env.PORT, () => {
             console.log(`Server successfully started at localhost:${process.env.PORT}`);
     
         });
-    })
-    .catch( err => console.log('Error : ' + err));
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+initializeConnection();

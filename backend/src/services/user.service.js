@@ -3,6 +3,8 @@ const Student = require('../models/student.model');
 const TPO = require('../models/tpo.model');
 const { STATUS } = require('../utils/constants');
 const AppError = require('../utils/errorbody');
+const { redisClient } = require('../config/redis.config');
+const jwt = require('jsonwebtoken');
 
 const registerStudent = async (data) => {
     try {
@@ -20,8 +22,7 @@ const registerStudent = async (data) => {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
-            password: data.password,
-            role: data.role
+            password: data.password
         });
 
         const student = await Student.create({
@@ -67,8 +68,7 @@ const registerTPO = async (data) => {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
-            password: data.password,
-            role: data.role
+            password: data.password
         });
 
         const tpo = await TPO.create({
@@ -117,8 +117,25 @@ const getUserByEmail = async (email) => {
     }
 }
 
+const logOut = async (token) => {
+    try {
+        const payload = jwt.decode(token);
+
+        await redisClient.set(`token:${token}`, 'Blocked');
+        await redisClient.expireAt(`token:${token}`, payload.exp);
+
+        return 'Successfully logged out';
+
+    } catch (error) {
+        console.log(error);
+        
+        throw error;
+    }
+}
+
 module.exports = {
     registerStudent,
     registerTPO,
-    getUserByEmail
+    getUserByEmail,
+    logOut
 }

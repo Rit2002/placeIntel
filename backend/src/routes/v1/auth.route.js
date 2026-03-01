@@ -12,14 +12,24 @@ authRouter.post(
 
 authRouter.post(
     '/auth/register/tpo',
+    authMiddleware.isAuthinticated,
+    authMiddleware.isAdmin,
     authMiddleware.validateRequest(tpoRegisterSchema),
     authController.tpoSignup
 );
 
 authRouter.post(
-    '/auth/signin',
+    '/auth/login',
     authMiddleware.validateRequest(signInSchema),
-    authController.signIn
+    authController.logIn
 );
+
+authRouter.post(
+    '/auth/logout',
+    authMiddleware.isAuthinticated,
+    authController.logOut
+);
+
+
 
 module.exports = authRouter;

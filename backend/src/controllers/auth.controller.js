@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 const studentSignup = async (req, res) => {
     try {
-        req.body.role = 'Student';
         const response = await userService.registerStudent(req.body);
 
         const token = jwt.sign(
@@ -36,7 +35,6 @@ const studentSignup = async (req, res) => {
 
 const tpoSignup = async (req, res) => {
     try {
-        req.body.role = 'TPO';
         const response = await userService.registerTPO(req.body);
 
         const token = jwt.sign(
@@ -64,7 +62,7 @@ const tpoSignup = async (req, res) => {
     }
 }
 
-const signIn = async (req, res) => {
+const logIn = async (req, res) => {
     try {
         const User = await userService.getUserByEmail(req.body.email);
 
@@ -110,8 +108,26 @@ const signIn = async (req, res) => {
     }
 }
 
+const logOut = async (req, res) => {
+    try {
+        const response = await userService.logOut(req.cookies.token);
+
+        return res
+            .cookie('token', null, { expires: new Date(0), httpOnly: true })
+            .status(STATUS.OK)
+            .json(successResponseBody(response));
+
+    } catch (error) {
+        
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
 module.exports = {
     studentSignup,
     tpoSignup,
-    signIn
+    logIn,
+    logOut
 }
