@@ -34,9 +34,16 @@ const ROUND_TYPE = {
     Assignment : "Assignment"
 }
 
+const USER_ROLE = {
+    admin : 'Admin',
+    tpo : 'TPO',
+    student : 'Student'
+}
+
 module.exports = {
     STATUS,
     INDUSTRY_TYPE,
     DIFFICULTY_LEVEL,
-    ROUND_TYPE
+    ROUND_TYPE,
+    USER_ROLE
 }

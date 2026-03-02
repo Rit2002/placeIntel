@@ -1,0 +1,193 @@
+const userService = require('../services/user.service');
+const { STATUS, USER_ROLE } = require('../utils/constants');
+const AppError = require('../utils/errorbody');
+const { successResponseBody, errorResponseBody } = require('../utils/responsebody');
+const jwt = require('jsonwebtoken');
+
+const studentSignup = async (req, res) => {
+    try {
+        const response = await userService.registerStudent(req.body);
+
+        const token = jwt.sign(
+            {
+                id : User.id, 
+                email : User.email, 
+                role : User.role, 
+                tokenVersion: response.tokenVersion
+            },
+            process.env.JWT_AUTH,
+            { expiresIn : '4h' }
+        );
+
+        return res.cookie('token', token, { maxAge : 240*60*1000 })
+                .status(STATUS.CREATED)
+                .json(successResponseBody(response, 'Successfully resgistered the user'));
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const tpoSignup = async (req, res) => {
+    try {
+        req.body.role = USER_ROLE.tpo;
+        const response = await userService.registerTPO(req.body);
+
+        const token = jwt.sign(
+            {
+                id : User.id, 
+                email : User.email, 
+                role : User.role, 
+                tokenVersion: response.tokenVersion
+            },
+            process.env.JWT_AUTH,
+            { expiresIn : '4h' }
+        );
+
+        return res.cookie('token', token, { maxAge : 240*60*1000 })
+                .status(STATUS.CREATED)
+                .json(successResponseBody(response, 'Successfully resgistered the user'));
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const logIn = async (req, res) => {
+    try {
+        const { response, token } = await userService.logIn(req.body.email, req.body.password);
+
+        
+        return res
+            .cookie('token', token, { maxAge : 240 * 60 * 1000})
+            .status(STATUS.OK)
+            .json(successResponseBody(response, 'Successfully logged in!'))
+
+    } catch (error) {
+        console.log(error);
+        
+        if(error instanceof AppError) {
+
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const logOut = async (req, res) => {
+    try {
+        const response = await userService.logOut(req.cookies.token);
+
+        return res
+            .cookie('token', null, { expires: new Date(0), httpOnly: true })
+            .status(STATUS.OK)
+            .json(successResponseBody(response));
+
+    } catch (error) {
+        
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const forgotPassword = async (req, res) => {
+    try {
+        const response = await userService.getPasswordResetLink(req.body.email);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response)
+        );
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        const response = await userService.resetPassword(req.userId, req.body.newPassword, req.hashedToken);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response)
+        );
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const reset = async (req, res) => {
+    try {
+        const response = await userService.reset_password(req.user._id, req.body.oldPassword, req.body.newPassword);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response)
+        );
+
+    } catch (error) {
+
+        if(error instanceof AppError) {
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+ 
+module.exports = {
+    studentSignup,
+    tpoSignup,
+    logIn,
+    logOut,
+    forgotPassword,
+    resetPassword,
+    reset
+}
