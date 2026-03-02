@@ -23,7 +23,7 @@ const validateRequest = (schema, source = 'body') => {
     };
 }
 
-const isAuthinticated = async (req, res, next) => {
+const isAuthenticated = async (req, res, next) => {
     try {
         const token = req.cookies?.token;
 
@@ -99,8 +99,26 @@ const isAdmin = (req, res, next) => {
     }
 }
 
+const isAdminORTpo = (req, res, next) => {
+    try {
+        
+        if(req.user.role != USER_ROLE.tpo || req.user.role != USER_ROLE.admin) {
+            return res.status(STATUS.UNAUTHORISED).json(
+                errorResponseBody('You are NOT Authorised')
+            );
+        }
+
+        next();
+
+    } catch (error) {
+        console.log(error);        
+
+    }
+}
+
 module.exports = {
     validateRequest,
-    isAuthinticated,
+    isAuthenticated,
+    isAdminORTpo,
     isAdmin
 };

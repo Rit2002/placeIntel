@@ -1,5 +1,5 @@
 const userService = require('../services/user.service');
-const { STATUS } = require('../utils/constants');
+const { STATUS, USER_ROLE } = require('../utils/constants');
 const AppError = require('../utils/errorbody');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody');
 const jwt = require('jsonwebtoken');
@@ -35,6 +35,7 @@ const studentSignup = async (req, res) => {
 
 const tpoSignup = async (req, res) => {
     try {
+        req.body.role = USER_ROLE.tpo;
         const response = await userService.registerTPO(req.body);
 
         const token = jwt.sign(

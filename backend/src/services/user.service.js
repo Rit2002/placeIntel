@@ -68,7 +68,8 @@ const registerTPO = async (data) => {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
-            password: data.password
+            password: data.password,
+            role: data.role
         });
 
         const tpo = await TPO.create({
