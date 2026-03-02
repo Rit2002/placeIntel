@@ -62,10 +62,15 @@ const signInSchema = z.object({
     password : basePassword            
 });
 
+const resetPasswordSchema = z.object({
+    newPassword : basePassword
+});
+
 
 module.exports = {
     studentRegisterSchema,
     tpoRegisterSchema,
     updateUserSchema,
-    signInSchema
+    signInSchema,
+    resetPasswordSchema
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 const authRouter = express.Router();
-const { studentRegisterSchema, tpoRegisterSchema, signInSchema } = require('../../schemas/user.schema');
+const { studentRegisterSchema, tpoRegisterSchema, signInSchema, resetPasswordSchema } = require('../../schemas/user.schema');
 const authMiddleware = require('../../middlewares/auth.middleware');
 const authController = require('../../controllers/auth.controller');
 
@@ -12,7 +12,7 @@ authRouter.post(
 
 authRouter.post(
     '/auth/register/tpo',
-    authMiddleware.isAuthinticated,
+    authMiddleware.isAuthenticated,
     authMiddleware.isAdmin,
     authMiddleware.validateRequest(tpoRegisterSchema),
     authController.tpoSignup
@@ -26,10 +26,21 @@ authRouter.post(
 
 authRouter.post(
     '/auth/logout',
-    authMiddleware.isAuthinticated,
+    authMiddleware.isAuthenticated,
     authController.logOut
 );
 
+authRouter.post(
+    '/auth/forgot-password',
+    authController.forgotPassword
+);
+
+authRouter.post(
+    '/auth/reset-password/:token',
+    authMiddleware.validateResetPasswordRequest,
+    authMiddleware.validateRequest(resetPasswordSchema),
+    authController.resetPassword
+);
 
 
 module.exports = authRouter;

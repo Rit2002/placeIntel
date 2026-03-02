@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema({
             message: 'Invalid Role'
         },
         default: 'Student'
+    },
+
+    tokenVersion: {
+        type: Number,
+        default: 0
     }
 
 }, { timestamps: true });

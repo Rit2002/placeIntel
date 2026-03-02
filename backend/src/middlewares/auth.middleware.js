@@ -3,6 +3,7 @@ const { STATUS, USER_ROLE } = require("../utils/constants");
 const { errorResponseBody } = require("../utils/responsebody");
 const User = require("../models/user.model");
 const { redisClient } = require("../config/redis.config");
+const { sha256 } = require('../utils/token');
 
 const validateRequest = (schema, source = 'body') => {
 
@@ -116,9 +117,42 @@ const isAdminORTpo = (req, res, next) => {
     }
 }
 
+const validateResetPasswordRequest = async (req, res, next) => {
+    try {
+        const token = req.params?.token;
+
+        if(!token) {
+            return res.status(STATUS.BAD_REQUEST).json(
+                errorResponseBody('Token is missing')
+            );
+        }
+
+        const hashedToken = sha256(token);
+
+        const userId = await redisClient.get(`resetToken:${hashedToken}`);
+
+        if(!userId) {
+            return res.status(STATUS.BAD_REQUEST).json(
+                errorResponseBody('Invalid or expired token')
+            )
+        }
+
+        req.userId = userId;
+        req.hashedToken = hashedToken;
+
+        next();
+
+    } catch (error) {
+        console.log(error);
+        
+        // next(error);
+    }
+}
+
 module.exports = {
     validateRequest,
     isAuthenticated,
     isAdminORTpo,
-    isAdmin
+    isAdmin,
+    validateResetPasswordRequest
 };

@@ -5,6 +5,8 @@ const { STATUS } = require('../utils/constants');
 const AppError = require('../utils/errorbody');
 const { redisClient } = require('../config/redis.config');
 const jwt = require('jsonwebtoken');
+const { generatePasswordResetToken } = require('../utils/token');
+const sendMail = require('../services/email.service');
 
 const registerStudent = async (data) => {
     try {
@@ -134,9 +136,107 @@ const logOut = async (token) => {
     }
 }
 
+const getPasswordResetLink = async (email) => {
+    try {
+        const user = await User.findOne({ email });
+
+        if(!user) {
+            return;
+        }
+
+       const { resetToken, hashedToken } = generatePasswordResetToken();
+
+       await redisClient.set(`resetToken:${hashedToken}`, user._id.toString());
+       await redisClient.expire(`resetToken:${hashedToken}`, 600);
+
+       const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+        const response = sendMail(
+            user.email,
+            "Password Reset Request",
+            `Hello,
+
+            We received a request to reset your password for your account.
+
+            If you made this request, please click the link below to set a new password:
+
+            ${resetURL}
+
+            This link will expire in 10 minutes for security reasons.
+
+            If you did not request a password reset, you can safely ignore this email. Your password will remain unchanged.
+
+            For security reasons, please do not share this link with anyone.
+
+            If you need assistance, contact our support team.
+
+            Thank you.`
+        );
+
+        console.log(response);
+        
+        return "If an account exists, a reset link has been sent.";
+
+    } catch (error) {
+        console.log(error);
+        
+        throw error;
+    }
+}
+
+const resetPassword = async (userId, newPassword, hashedToken) => {
+    try {
+        // fetch the document
+        const user = await User.findById(userId);
+
+        if(!user) {
+            throw new AppError(
+                STATUS.NOT_FOUND,
+                'User NOT found'
+            );
+        }
+
+        // update the password
+        user.password = newPassword;
+        user.tokenVersion += 1;
+        // hash & save the password
+        await user.save();
+
+        // delete the token after updating the password from redis
+        await redisClient.del(`resetToken:${hashedToken}`);
+
+        const response = sendMail(
+            user.email,
+            "Your Password Has Been Successfully Reset",
+            `Hello,
+
+            This is a confirmation that your account password has been successfully changed.
+
+            If you made this change, no further action is required.
+
+            If you did not reset your password, please contact our support team immediately, as your account may be at risk.
+
+            For security reasons, we recommend reviewing your recent account activity and ensuring your password is strong and unique.
+
+            Thank you.`
+        );
+
+        console.log(response.message);        
+
+        return "Successfully reseted the password";
+
+    } catch (error) {
+        console.log(error);
+        
+        throw error;
+    }
+}
+
 module.exports = {
     registerStudent,
     registerTPO,
     getUserByEmail,
-    logOut
+    logOut,
+    getPasswordResetLink,
+    resetPassword
 }

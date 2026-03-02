@@ -9,10 +9,15 @@ const studentSignup = async (req, res) => {
         const response = await userService.registerStudent(req.body);
 
         const token = jwt.sign(
-            { id : response.id, email : response.email, role : response.role },
+            {
+                id : User.id, 
+                email : User.email, 
+                role : User.role, 
+                tokenVersion: response.tokenVersion
+            },
             process.env.JWT_AUTH,
             { expiresIn : '4h' }
-        )
+        );
 
         return res.cookie('token', token, { maxAge : 240*60*1000 })
                 .status(STATUS.CREATED)
@@ -39,7 +44,12 @@ const tpoSignup = async (req, res) => {
         const response = await userService.registerTPO(req.body);
 
         const token = jwt.sign(
-            { id : response.id, email : response.email, role : response.role },
+            {
+                id : User.id, 
+                email : User.email, 
+                role : User.role, 
+                tokenVersion: response.tokenVersion
+            },
             process.env.JWT_AUTH,
             { expiresIn : '4h' }
         );
@@ -77,7 +87,12 @@ const logIn = async (req, res) => {
         }
 
         const token = jwt.sign(
-            {id : User.id, email : User.email, role : User.role},
+            {
+                id : User.id, 
+                email : User.email, 
+                role : User.role, 
+                tokenVersion: response.tokenVersion
+            },
             process.env.JWT_AUTH,
             { expiresIn : '4h' }
         );
@@ -126,9 +141,55 @@ const logOut = async (req, res) => {
     }
 }
 
+const forgotPassword = async (req, res) => {
+    try {
+        const response = await userService.getPasswordResetLink(req.body.email);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response)
+        );
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        const response = await userService.resetPassword(req.userId, req.body.newPassword, req.hashedToken);
+
+        return res.status(STATUS.OK).json(
+            successResponseBody(response)
+        );
+
+    } catch (error) {
+        
+        if(error instanceof AppError) {
+            return res.status(error.statusCode).json(
+                errorResponseBody(error.details)
+            );
+        }
+
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(
+            errorResponseBody(error)
+        );
+    }
+}
+
 module.exports = {
     studentSignup,
     tpoSignup,
     logIn,
-    logOut
+    logOut,
+    forgotPassword,
+    resetPassword
 }
