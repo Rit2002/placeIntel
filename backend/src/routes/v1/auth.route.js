@@ -30,6 +30,12 @@ authRouter.post(
     authController.logOut
 );
 
+authRouter.patch(
+    '/auth/reset',
+    authMiddleware.isAuthenticated,
+    authController.reset
+)
+
 authRouter.post(
     '/auth/forgot-password',
     authController.forgotPassword
@@ -41,6 +47,5 @@ authRouter.post(
     authMiddleware.validateRequest(resetPasswordSchema),
     authController.resetPassword
 );
-
 
 module.exports = authRouter;

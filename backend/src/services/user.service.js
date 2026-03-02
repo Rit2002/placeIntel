@@ -100,7 +100,7 @@ const registerTPO = async (data) => {
     }
 }
 
-const getUserByEmail = async (email) => {
+const logIn = async (email, password) => {
     try {
         const user = await User.findOne({email : email});
 
@@ -111,7 +111,38 @@ const getUserByEmail = async (email) => {
             )
         }
 
-        return user;
+        const isValidPassword = await user.isValidPassword(password);
+        
+        if(!isValidPassword) {
+            throw new AppError(
+                STATUS.UNAUTHORISED,
+                'Invalid credentials'
+            );
+        }
+
+        const token = jwt.sign(
+            {
+                id : user.id, 
+                email : user.email, 
+                role : user.role, 
+                tokenVersion: user.tokenVersion
+            },
+            process.env.JWT_AUTH,
+            { expiresIn : '4h' }
+        );
+
+        let response = {
+            firstName : user.firstName,
+            lastName : user.lastName,
+            email : user.email,
+            role : user.role
+        }
+
+        return {
+            response,
+            token
+        }
+
 
     } catch (error) {
         console.log(error);
@@ -232,11 +263,38 @@ const resetPassword = async (userId, newPassword, hashedToken) => {
     }
 }
 
+const reset_password = async (userId, oldPassword, newPassword) => {
+    try {
+        const user = await User.findById(userId);
+
+        const isOldPasswordCorrect = await user.isValidPassword(oldPassword);
+
+        if(!isOldPasswordCorrect) {
+            throw new AppError(
+                STATUS.FORBIDDEN,
+                "Invalid credentials"
+            );
+        }
+
+        user.password = newPassword;
+
+        await user.save();
+
+        return "Successfully updated the password";
+
+    } catch (error) {
+        console.log(error);
+
+        throw error;        
+    }
+}
+
 module.exports = {
     registerStudent,
     registerTPO,
-    getUserByEmail,
+    logIn,
     logOut,
     getPasswordResetLink,
-    resetPassword
+    resetPassword,
+    reset_password
 }
