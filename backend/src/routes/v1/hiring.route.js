@@ -12,18 +12,6 @@ hiringRouter.post(
     hiringController.create
 );
 
-hiringRouter.get(
-    '/hiring/all',
-    hiringMiddleware.validateGetAllHiringRequest,
-    hiringController.getAllHiring
-);
-
-hiringRouter.get(
-    '/hiring/:id',
-    hiringMiddleware.validateGetHiringRequest,
-    hiringController.getHiring
-);
-
 hiringRouter.patch(
     '/hiring/:id',
     authMiddleware.isAuthenticated,

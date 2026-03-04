@@ -39,12 +39,7 @@ const validateHiringCreateRequest = (req, res, next) => {
             );
         }
 
-        if(!req.body.roles[i].location) {
-            return res.status(STATUS.BAD_REQUEST).json(
-                errorResponseBody(`location not found`)
-            );
-        }
-
+        
         if(!req.body.roles[i].title) {
             return res.status(STATUS.BAD_REQUEST).json(
                 errorResponseBody(`Job title not found`)

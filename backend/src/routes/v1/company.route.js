@@ -18,7 +18,7 @@ companyRouter.get(
 );
 
 companyRouter.get(
-    '/company/:id',
+    '/company/:id/details',
     companyMiddleware.validateObjectId,
     companyController.getCompany
 );

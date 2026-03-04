@@ -103,7 +103,7 @@ const isAdmin = (req, res, next) => {
 const isAdminORTpo = (req, res, next) => {
     try {
         
-        if(req.user.role != USER_ROLE.tpo || req.user.role != USER_ROLE.admin) {
+        if(req.user.role != USER_ROLE.tpo && req.user.role != USER_ROLE.admin) {
             return res.status(STATUS.UNAUTHORISED).json(
                 errorResponseBody('You are NOT Authorised')
             );

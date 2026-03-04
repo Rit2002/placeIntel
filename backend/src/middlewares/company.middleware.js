@@ -36,6 +36,8 @@ const validateObjectId = (req, res, next) => {
             errorResponseBody('Invalid id')
         );
     }
+
+    next();
 }
 
 module.exports = {

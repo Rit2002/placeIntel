@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { DIFFICULTY_LEVEL, ROUND_TYPE } = require('../utils/constants');
 
 const hiringSchema = new mongoose.Schema({
+
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',
@@ -10,22 +11,92 @@ const hiringSchema = new mongoose.Schema({
 
     roles: [{
 
-        title:{
+        title: {
             type: String,
             required: true,
             trim: true
         },
 
-        type:{
+        type: {
             type: String,
             enum: ["Intern", "Full Time", "Contract"],
             required: true
         },
 
-        ctc:{
+        ctc: {
             type: Number,
             required: true,
+        },
+
+        eligibility: {
+
+            academics: {
+
+                minCgpa: {
+                    type: Number,
+                    min: 0,
+                    max: 10,
+                    required: true,
+                },
+
+                maxBacklogs: {
+                    type: Number,
+                    min: 0,
+                    default: 0,
+                    required: true,
+                },
+
+                tenthPercent: {
+                    type: Number,
+                    min: 0,
+                    max: 100,
+                    required: true,
+                },
+
+                twelthPercent: {
+                    type: Number,
+                    min: 0,
+                    max: 100,
+                    required: true,
+                },
+
+                degreePercent: {
+                    type: Number,
+                    min: 0,
+                    max: 100,
+                    required: true
+                }
+            },
+
+            education: {
+
+                allowedDegrees: [{
+                    type: String,
+                    required: true,
+                    trim: true
+                }],
+
+                allowedBranches: [{
+                    type: String,
+                    required: true,
+                    trim: true
+                }],
+
+                graduationYears: [{
+                    type: Number
+                }]
+            },
+
+            additionalConstraints: {
+
+                gapYearsAllowed: {
+                    type: Number,
+                    default: 0
+                }
+
+            }
         }
+
     }],
 
     rounds: [{
@@ -74,9 +145,9 @@ const hiringSchema = new mongoose.Schema({
         type: Number,
         required: true,
         index: true
-    },
-    
-}, { timestamps : true });
+    }
+
+}, { timestamps: true });
 
 const Hiring = mongoose.model('Hiring', hiringSchema);
 

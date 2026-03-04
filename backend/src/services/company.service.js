@@ -1,4 +1,5 @@
 const Company = require('../models/company.model');
+const Hiring = require('../models/hiring.model');
 const { STATUS } = require('../utils/constants');
 const AppError = require('../utils/errorbody');
 
@@ -36,21 +37,29 @@ const createCompany = async (data) => {
     }
 }
 
-const getCompanyById = async (companyId) => {
+const getCompanyDetails = async (companyId) => {
     try {
-        const response = await Company.findById(companyId);
+       const [company, hiring] = await Promise.all([
+            Company.findById(companyId),
+            Hiring.findOne({companyId})
+       ])
 
-        if(!response) {
+        if(!company) {
             throw new AppError(
                 STATUS.NOT_FOUND,
                 'No company found for given id'
             )
         }
 
-        return response;
+
+        return {
+            company : company,
+            hiring : hiring || null
+        }
 
     } catch (error) {
-
+        console.log(error);
+        
         throw error;       
     }
 }
@@ -148,7 +157,7 @@ const updateCompanyDetails = async (companyId, data) => {
 
 module.exports = {
     createCompany,
-    getCompanyById,
+    getCompanyDetails,
     getAllCompanies,
     deleteCompanyById,
     updateCompanyDetails

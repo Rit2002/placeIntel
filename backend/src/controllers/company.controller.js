@@ -32,12 +32,12 @@ const create = async (req, res) => {
 
 const getCompany = async (req, res) => {
     try {
-        const response = await companyService.getCompanyById(req.params.id);
+        const response = await companyService.getCompanyDetails(req.params.id);
 
         return res.status(STATUS.OK).json(
             successResponseBody(
                 response,
-                'Successfully fetched the company'
+                'Successfully fetched the company details'
             )
         );
 

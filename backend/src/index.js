@@ -8,7 +8,6 @@ const main = require('./config/db.config');
 const { connectRedis } = require('./config/redis.config');
 const companyRoute = require('./routes/v1/company.route');
 const hiringRoute = require('./routes/v1/hiring.route');
-const eligibilityRoute = require('./routes/v1/eligibility.route');
 const authRoute = require('./routes/v1/auth.route');
 
 const app = express();
@@ -21,7 +20,6 @@ app.use(cookieParser());
 app.use('/pi/api/v1', authRoute);
 app.use('/pi/api/v1', companyRoute);
 app.use('/pi/api/v1', hiringRoute);
-app.use('/pi/api/v1', eligibilityRoute);
 
 
 const initializeConnection = async () => {

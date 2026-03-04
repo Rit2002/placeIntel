@@ -4,7 +4,7 @@ const AppError = require('../utils/errorbody');
 
 const createHiring = async (data) => {
     try {
-        const existing = await Hiring.findOne(data);
+        const existing = await Hiring.findOne({ companyId : data.companyId })
         
         if(existing) {
             throw new AppError(

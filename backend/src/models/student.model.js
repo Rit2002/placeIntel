@@ -15,7 +15,18 @@ const StudentSchema = new mongoose.Schema({
     year: {
         type: String,
         required: true
-    }
+    },
+
+    gender: {
+        type: String,
+        required: true,
+        enum: {
+            values: ['Male', 'Female'],
+            message: "Invalid gender"
+        }
+    },
+
+    
 }, { timestamps : true });
 
 const Student = mongoose.model('Student', StudentSchema);
