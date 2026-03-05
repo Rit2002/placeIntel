@@ -21,6 +21,11 @@ app.use('/pi/api/v1', authRoute);
 app.use('/pi/api/v1', companyRoute);
 app.use('/pi/api/v1', hiringRoute);
 
+app.use((err, req, res, next) => {
+    console.error(err);
+    return res.status(500).json({ message: 'Something went wrong' });
+});
+
 
 const initializeConnection = async () => {
     try {

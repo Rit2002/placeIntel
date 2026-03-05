@@ -31,7 +31,7 @@ authRouter.post(
 );
 
 authRouter.patch(
-    '/auth/reset',
+    '/auth/reset/:id',
     authMiddleware.isAuthenticated,
     authController.reset
 )

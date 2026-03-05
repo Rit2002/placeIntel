@@ -104,7 +104,7 @@ const getAllHiring = async (data) => {
 
 const updateHiring = async (hiringId, data) => {
     try {
-        const updatedHiring = await Hiring.findByIdAndUpdate(hiringId, data, {new:true, runValidators:true});
+        const updatedHiring = await Hiring.findByIdAndUpdate(hiringId,{ $set: data }, {new:true, runValidators:true});
 
         if(!updatedHiring) {
 

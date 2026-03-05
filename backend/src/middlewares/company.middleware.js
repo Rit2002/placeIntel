@@ -1,46 +1,32 @@
 const { STATUS } = require('../utils/constants');
 const { errorResponseBody } = require('../utils/responsebody');
-const objectId = require('mongoose').Types.ObjectId;
+const { z } = require('zod');
 
-const validateCompanyCreateRequest = (req, res, next) => {
 
-    if(!req.body.name) {
+const validateRequest = (schema, source='body') => {
 
-        return res.status(STATUS.BAD_REQUEST).json(
-            errorResponseBody('No name field found')
-        );
+    return (req, res, next) => {
+        try {
+            const parsedReq = schema.parse(req[source]);
+
+            req[source] = parsedReq;
+
+            next();
+
+        } catch (error) {
+            
+            if(error instanceof z.ZodError) {
+                return res.status(STATUS.BAD_REQUEST).json(
+                    errorResponseBody(z.treeifyError(error))
+                );
+            }
+
+            next(error);
+        }
     }
-
-    if(!req.body.description) {
-
-        return res.status(STATUS.BAD_REQUEST).json(
-            errorResponseBody('No description field found')
-        );
-    }
-
-    if(!req.body.industryType) {
-
-        return res.status(STATUS.BAD_REQUEST).json(
-            errorResponseBody('No industryType field found')
-        );
-    }
-
-    next();
 }
 
-
-const validateObjectId = (req, res, next) => {
-
-    if(!objectId.isValid(req.params.id)) {
-        return res.status(STATUS.BAD_REQUEST).json(
-            errorResponseBody('Invalid id')
-        );
-    }
-
-    next();
-}
 
 module.exports = {
-    validateCompanyCreateRequest,
-    validateObjectId
+    validateRequest
 }

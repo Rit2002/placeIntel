@@ -1,14 +1,15 @@
 const express = require('express');
 const companyRouter = express.Router();
 const companyController = require('../../controllers/company.controller');
-const companyMiddleware = require('../../middlewares/company.middleware');
+const { validateRequest } = require('../../middlewares/company.middleware');
 const authMiddleware = require('../../middlewares/auth.middleware');
+const { companyCreateSchema, companyParamSchema, companyUpdateSchema } = require('../../schemas/company.schema');
 
 companyRouter.post(
     '/company',
     authMiddleware.isAuthenticated,
     authMiddleware.isAdminORTpo,
-    companyMiddleware.validateCompanyCreateRequest,
+    validateRequest(companyCreateSchema),
     companyController.create
 );
 
@@ -19,7 +20,7 @@ companyRouter.get(
 
 companyRouter.get(
     '/company/:id/details',
-    companyMiddleware.validateObjectId,
+    validateRequest(companyParamSchema, 'params'),
     companyController.getCompany
 );
 
@@ -27,7 +28,7 @@ companyRouter.delete(
     '/company/:id',
     authMiddleware.isAuthenticated,
     authMiddleware.isAdminORTpo,
-    companyMiddleware.validateObjectId,
+    validateRequest(companyParamSchema, 'params'),
     companyController.deleteCompany
 );
 
@@ -35,7 +36,8 @@ companyRouter.patch(
     '/company/:id',
     authMiddleware.isAuthenticated,
     authMiddleware.isAdminORTpo,
-    companyMiddleware.validateObjectId,
+    validateRequest(companyUpdateSchema),
+    validateRequest(companyParamSchema, 'params'),
     companyController.updateCompany
 );
 

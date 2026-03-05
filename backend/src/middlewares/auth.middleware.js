@@ -4,6 +4,7 @@ const { errorResponseBody } = require("../utils/responsebody");
 const User = require("../models/user.model");
 const { redisClient } = require("../config/redis.config");
 const { sha256 } = require('../utils/token');
+const { z } = require('zod');
 
 const validateRequest = (schema, source = 'body') => {
 
@@ -17,9 +18,13 @@ const validateRequest = (schema, source = 'body') => {
 
         } catch (error) {            
             
-            return res.status(STATUS.BAD_REQUEST).json(
-                errorResponseBody(error.flatten().fieldErrors)
-            );
+            if(error instanceof z.ZodError) {
+                return res.status(STATUS.BAD_REQUEST).json(
+                    errorResponseBody(z.treeifyError(error))
+                );
+            }
+
+            next(error);
         }
     };
 }

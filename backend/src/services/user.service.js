@@ -172,7 +172,7 @@ const getPasswordResetLink = async (email) => {
         const user = await User.findOne({ email });
 
         if(!user) {
-            return;
+            return "If an account exists, a reset link has been sent.";
         }
 
        const { resetToken, hashedToken } = generatePasswordResetToken();

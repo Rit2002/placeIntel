@@ -1,22 +1,24 @@
 const express = require('express');
 const hiringRouter = express.Router();
 const hiringController = require('../../controllers/hiring.controller');
-const hiringMiddleware = require('../../middlewares/hiring.middleware');
+const { validateRequest } = require('../../middlewares/hiring.middleware');
 const authMiddleware = require('../../middlewares/auth.middleware');
+const { hiringCreateSchema, hiringDeleteSchema, hiringParamSchema, hiringUpdateSchema } = require('../../schemas/hiring.schema');
 
 hiringRouter.post(
     '/hiring',
     authMiddleware.isAuthenticated,
     authMiddleware.isAdminORTpo,
-    hiringMiddleware.validateHiringCreateRequest,
+    validateRequest(hiringCreateSchema),
     hiringController.create
 );
 
-hiringRouter.patch(
+hiringRouter.put(
     '/hiring/:id',
     authMiddleware.isAuthenticated,
     authMiddleware.isAdminORTpo,
-    hiringMiddleware.validateObjectId,
+    validateRequest(hiringParamSchema, 'params'),
+    validateRequest(hiringUpdateSchema),
     hiringController.updateHiring
 );
 
@@ -24,7 +26,7 @@ hiringRouter.delete(
     '/hiring/:id',
     authMiddleware.isAuthenticated,
     authMiddleware.isAdminORTpo,
-    hiringMiddleware.validateObjectId,
+    validateRequest(hiringDeleteSchema, 'params'),
     hiringController.deleteHiring
 );
 

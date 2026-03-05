@@ -119,7 +119,8 @@ const logOut = async (req, res) => {
 const forgotPassword = async (req, res) => {
     try {
         const response = await userService.getPasswordResetLink(req.body.email);
-
+        console.log(response);
+        
         return res.status(STATUS.OK).json(
             successResponseBody(response)
         );
